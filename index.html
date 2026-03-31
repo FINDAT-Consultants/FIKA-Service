@@ -1752,6 +1752,13 @@
       .detailsBlock .head{padding:10px 12px;}
       .detailsBlock .head .h{font-size:12px;}
       .detailsBlock .body{padding:10px 12px;}
+      .sheet .locInputs input,
+      .sheet .formRow input,
+      .sheet .formRow select,
+      .sheet #serviceType,
+      .sheet #weight-input,
+      .sheet #pick-up-date,
+      .sheet #pick-up-time{font-size:16px !important;}
       .momoPayInfo{border-radius:14px; padding:8px 10px; background:#fff;}
       .momoPayInfo .momoTitle{font-size:10px;}
       .momoPayInfo .momoNumber{font-size:12px;}
@@ -1851,6 +1858,10 @@ body.dark .pmShowBtn{ background:rgba(255,255,255,.06); color:#fff; border-color
 
     .formRow{ display:flex; gap:10px; margin-top:12px; }
     .formRow input, .formRow select{width:100%; border:1px solid var(--line); border-radius:18px; padding:12px 12px; outline:none; background:#fff; font-size:13px; font-weight:700;}
+    .pdNoZoomInput{font-size:16px !important; -webkit-text-size-adjust:100%;}
+    .pdGhostPlaceholder::placeholder{color:#98a2b3; opacity:1;}
+    .pdGhostPlaceholder.is-empty{color:#98a2b3;}
+    .pdGhostPlaceholder:not(.is-empty){color:var(--text);}
 
     .routeSummary{margin-top:12px; background:#fbfbfd; border:1px solid var(--line); border-radius:18px; padding:10px 12px; font-size:12px; color:#111; display:none; font-weight:800;}
     .routeSummary strong{font-weight:900}
@@ -3610,7 +3621,7 @@ body.dark .fxProgWrap{ background: rgba(255,255,255,.04); }
           <div class="locInputs">
             <label>Pickup</label>
             <div class="locInputRow">
-              <input type="text" id="pickup-location-input" placeholder="Enter location or address" autocomplete="off">
+              <input type="text" id="pickup-location-input" class="pdNoZoomInput" placeholder="Enter location or address" autocomplete="off" inputmode="text" autocapitalize="words" spellcheck="false">
               <div class="locInputActions">
                 <button type="button" id="pickup-confirm-btn" class="locActionBtn confirm" aria-label="Keep pickup text">✔</button>
                 <button type="button" id="pickup-clear-btn" class="locActionBtn clear" aria-label="Clear pickup text">✘</button>
@@ -3627,7 +3638,7 @@ body.dark .fxProgWrap{ background: rgba(255,255,255,.04); }
           <div class="locInputs">
             <label>Delivery</label>
             <div class="locInputRow">
-              <input type="text" id="delivery-location-input" placeholder="Delivery address" autocomplete="off">
+              <input type="text" id="delivery-location-input" class="pdNoZoomInput" placeholder="Delivery address" autocomplete="off" inputmode="text" autocapitalize="words" spellcheck="false">
               <div class="locInputActions">
                 <button type="button" id="delivery-confirm-btn" class="locActionBtn confirm" aria-label="Keep delivery text">✔</button>
                 <button type="button" id="delivery-clear-btn" class="locActionBtn clear" aria-label="Clear delivery text">✘</button>
@@ -3676,12 +3687,12 @@ body.dark .fxProgWrap{ background: rgba(255,255,255,.04); }
                   <option value="Standard" selected>Standard</option>
                   <option value="Express">Express</option>
                 </select>
-                <input type="number" id="weight-input" min="0" step="0.1" placeholder="Weight (kg)">
+                <input type="number" id="weight-input" class="pdNoZoomInput" min="0" step="0.1" placeholder="Weight (kg)">
               </div>
 
               <div class="formRow">
-                <input type="date" id="pick-up-date">
-                <input type="time" id="pick-up-time">
+                <input type="text" id="pick-up-date" class="pdNoZoomInput pdGhostPlaceholder is-empty" placeholder="Pick-up date" inputmode="none" autocomplete="off" data-real-type="date">
+                <input type="text" id="pick-up-time" class="pdNoZoomInput pdGhostPlaceholder is-empty" placeholder="Pick-up time" inputmode="none" autocomplete="off" data-real-type="time">
               </div>
             </div>
           </div>
@@ -6012,6 +6023,8 @@ function initMap(){
   wireAutocomplete('pickup-location-input', 'pickup-suggestions', (ll, label) => { if (navActive) return; setPreview(ll, label); setPickup(ll, label); });
   wireAutocomplete('delivery-location-input', 'delivery-suggestions', (ll, label) => { if (navActive) return; setPreview(ll, label); setDelivery(ll, label); });
 
+  try{ initPackageDeliveryGhostInputs(); }catch(e){}
+
   const sheet = document.getElementById('sheet');
   document.getElementById('sheetHandle').addEventListener('click', () => {
     sheet.classList.toggle('expanded');
@@ -8003,6 +8016,45 @@ function extractBookingDetails(){
 }
 
 
+function initPackageDeliveryGhostInputs(){
+  ['pick-up-date','pick-up-time'].forEach(id => {
+    const input = document.getElementById(id);
+    if (!input || input.dataset.ghostReady === '1') return;
+
+    const markEmptyState = () => {
+      input.classList.toggle('is-empty', !String(input.value || '').trim());
+    };
+
+    const realType = String(input.dataset.realType || '').trim();
+    if (realType){
+      input.addEventListener('focus', () => {
+        if (input.type !== realType){
+          try{ input.type = realType; }catch(e){}
+        }
+        markEmptyState();
+      });
+
+      input.addEventListener('blur', () => {
+        if (!String(input.value || '').trim()){
+          try{ input.type = 'text'; }catch(e){}
+        }
+        markEmptyState();
+      });
+
+      input.addEventListener('change', () => {
+        markEmptyState();
+      });
+
+      if (!String(input.value || '').trim()){
+        try{ input.type = 'text'; }catch(e){}
+      }
+    }
+
+    markEmptyState();
+    input.dataset.ghostReady = '1';
+  });
+}
+
 function resetBookingForm(){
   // Clear all "Send a Package" entry fields and map artifacts, ready for a new booking.
   try{
@@ -8028,8 +8080,8 @@ function resetBookingForm(){
     const tm  = document.getElementById('pick-up-time');
     if (svc) svc.value = 'Standard';
     if (wt)  wt.value  = '';
-    if (dt)  dt.value  = '';
-    if (tm)  tm.value  = '';
+    if (dt){ dt.value = ''; try{ dt.type = 'text'; }catch(e){} dt.classList.add('is-empty'); }
+    if (tm){ tm.value = ''; try{ tm.type = 'text'; }catch(e){} tm.classList.add('is-empty'); }
 
     // Payment
     const pay = document.getElementById('paymentMethod');
