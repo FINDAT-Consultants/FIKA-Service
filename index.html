@@ -1141,6 +1141,61 @@
     }
 
 
+
+    @media (max-width: 768px){
+      .topbar{padding:14px 14px 6px 14px; gap:10px; grid-template-columns:auto 1fr auto;}
+      .brand .logo{font-size:26px;}
+      .brand .sub{font-size:10px;}
+      .icon-btn{width:42px; height:42px; border-radius:15px;}
+      .homeLocationBar{width:100%; min-height:40px; padding:6px 12px;}
+      .heroWrap{padding:4px 14px 10px;}
+      .serviceScroller{gap:14px; margin-top:14px; padding:2px 2px 8px;}
+      .serviceCard{min-width:74px; width:74px;}
+      .serviceCircle{width:74px; height:74px; border-radius:24px; margin-bottom:6px; box-shadow:0 7px 0 rgba(231,181,107,.34), 0 12px 20px rgba(91,63,140,.12);}
+      .serviceIcon{font-size:28px;}
+      .serviceBadge{right:-4px; top:6px; padding:4px 7px; font-size:9px;}
+      .serviceLabel{width:100%; max-width:74px; white-space:normal; padding:6px 8px; font-size:10px; line-height:1.2; border-radius:16px;}
+      .menuPanel{width:min(300px, 86%);}
+      .featureHeader{padding:12px 14px 10px 14px; gap:8px;}
+      .featureHeader h2{font-size:18px;}
+      .featureBackBtn{width:36px; height:36px; border-radius:12px;}
+      .featureBody{padding:10px 12px 16px 12px;}
+      .orderCard{border-radius:18px; padding:11px 12px;}
+      .orderCard .rowLine{font-size:11px; gap:6px; flex-wrap:wrap;}
+      .orderCard .actions{gap:6px;}
+      .orderCard button,.orderCard select{min-height:34px;}
+    }
+    @media (max-width: 640px){
+      .searchPanel{flex-direction:column; align-items:stretch; width:calc(100% - 20px); top:-20px; gap:10px;}
+      .searchBtn{width:100%; min-width:0; height:42px; font-size:12px;}
+      .searchShell{width:100%;}
+      .featureHeaderMid{gap:8px;}
+      .insightsBtn{height:32px; padding:0 10px; font-size:11px;}
+      .insightsPanel{width:100%; max-width:none; border-radius:0;}
+    }
+    @media (max-width: 520px){
+      .topbar{padding:12px 12px 4px 12px; gap:8px;}
+      .brand .logo{font-size:23px;}
+      .icon-btn{width:38px; height:38px; border-radius:13px;}
+      .homeLocationText .main{font-size:10px;}
+      .serviceScroller{gap:12px;}
+      .serviceCard{min-width:68px; width:68px;}
+      .serviceCircle{width:68px; height:68px; border-radius:22px;}
+      .serviceIcon{font-size:24px;}
+      .serviceLabel{max-width:68px; font-size:9.5px; padding:5px 6px;}
+      .homeLower{margin-top:48px;}
+      .searchShell{min-height:42px; padding:0 12px;}
+      .searchShell input{font-size:13px;}
+      .featureHeader{padding:10px 12px 8px 12px;}
+      .featureHeader h2{font-size:16px;}
+      .featureBody{padding:10px 10px 14px 10px;}
+      .menuPanel{width:min(320px, 92%); padding:14px 12px 12px 12px;}
+      .menuItem{padding:10px 8px; font-size:12px;}
+      .orderCard .actions{flex-direction:column; align-items:stretch;}
+      .orderCard button,.orderCard select{width:100%;}
+    }
+
+
     /* ===== DISCOVERY / SEARCH RESULTS (Glovo-inspired, Fikova styling) ===== */
     .discoveryOverlay{
       position:fixed;
@@ -4945,95 +5000,6 @@ function showTrackingLinkModal(url, order){
 /* =========================================================
    STORAGE
    ========================================================= */
-
-const DEMO_CLOUD_ROOT = 'demoShared';
-let __demoCloudSyncStarted = false;
-
-function getDemoCloudRootRef(){
-  const db = ensureFirebase();
-  if (!db) return null;
-  try{ return db.ref(DEMO_CLOUD_ROOT); }catch(e){ return null; }
-}
-function demoCloudUsersRef(){
-  const root = getDemoCloudRootRef();
-  return root ? root.child('users') : null;
-}
-function demoCloudOrdersRef(){
-  const root = getDemoCloudRootRef();
-  return root ? root.child('orders') : null;
-}
-function cloneDemoData(value, fallback){
-  try{ return JSON.parse(JSON.stringify(value)); }catch(e){ return fallback; }
-}
-function applyCloudUsers(list){
-  users = Array.isArray(list) ? list : [];
-  try{ localStorage.setItem(USERS_KEY, JSON.stringify(users)); }catch(e){}
-  try{ ensureDefaultManagementAccount(); }catch(e){}
-  try{ syncRidersFromUsers(); }catch(e){}
-}
-function applyCloudOrders(list){
-  orders = Array.isArray(list) ? list : [];
-  try{ localStorage.setItem(ORDERS_KEY, JSON.stringify(orders)); }catch(e){}
-}
-function pushUsersToDemoCloud(){
-  const ref = demoCloudUsersRef();
-  if (!ref) return;
-  try{ ref.set(cloneDemoData(users || [], [])); }catch(e){}
-}
-function pushOrdersToDemoCloud(){
-  const ref = demoCloudOrdersRef();
-  if (!ref) return;
-  try{ ref.set(cloneDemoData(orders || [], [])); }catch(e){}
-}
-function startDemoCloudSync(){
-  if (__demoCloudSyncStarted) return;
-  const usersRef = demoCloudUsersRef();
-  const ordersRef = demoCloudOrdersRef();
-  if (!usersRef || !ordersRef) return;
-  __demoCloudSyncStarted = true;
-
-  try{
-    usersRef.on('value', (snap) => {
-      const list = snap && snap.val ? (snap.val() || []) : [];
-      applyCloudUsers(list);
-    });
-  }catch(e){}
-
-  try{
-    ordersRef.on('value', (snap) => {
-      const list = snap && snap.val ? (snap.val() || []) : [];
-      applyCloudOrders(list);
-    });
-  }catch(e){}
-
-  try{
-    usersRef.once('value').then((snap) => {
-      const val = snap && snap.val ? snap.val() : null;
-      if (Array.isArray(val) && val.length){
-        applyCloudUsers(val);
-      }else if ((users || []).length){
-        pushUsersToDemoCloud();
-      }else{
-        try{ ensureDefaultManagementAccount(); }catch(e){}
-        pushUsersToDemoCloud();
-      }
-    }).catch(()=>{});
-  }catch(e){}
-
-  try{
-    ordersRef.once('value').then((snap) => {
-      const val = snap && snap.val ? snap.val() : null;
-      if (Array.isArray(val) && val.length){
-        applyCloudOrders(val);
-      }else if ((orders || []).length){
-        pushOrdersToDemoCloud();
-      }else{
-        pushOrdersToDemoCloud();
-      }
-    }).catch(()=>{});
-  }catch(e){}
-}
-
 function loadUsers(){
   try{
     const raw = localStorage.getItem(USERS_KEY);
@@ -5051,7 +5017,7 @@ function loadUsers(){
   // derive & persist rider roster
   try{ loadRiders(); syncRidersFromUsers(); }catch(e){}
 }
-function saveUsers(){ localStorage.setItem(USERS_KEY, JSON.stringify(users)); try{ ensureDefaultManagementAccount(); }catch(e){} try{ syncRidersFromUsers(); }catch(e){} try{ pushUsersToDemoCloud(); }catch(e){} }
+function saveUsers(){ localStorage.setItem(USERS_KEY, JSON.stringify(users)); try{ ensureDefaultManagementAccount(); }catch(e){} try{ syncRidersFromUsers(); }catch(e){} }
 
 function loadCurrentUser(){
   try{
@@ -5096,14 +5062,13 @@ function loadOrders(){
 
   }catch(e){ orders = []; }
 }
-function saveOrders(){ localStorage.setItem(ORDERS_KEY, JSON.stringify(orders)); try{ pushOrdersToDemoCloud(); }catch(e){} }
+function saveOrders(){ localStorage.setItem(ORDERS_KEY, JSON.stringify(orders)); }
 
 function clearAllDatabaseData(){
   localStorage.removeItem(USERS_KEY);
   localStorage.removeItem(ORDERS_KEY);
   localStorage.removeItem(CURRENT_USER_KEY);
   localStorage.removeItem(RIDERS_KEY);
-  try{ const root = getDemoCloudRootRef(); if (root) root.remove(); }catch(e){};
   localStorage.removeItem(RECON_TXNS_KEY);
   localStorage.removeItem(RECON_AUDIT_KEY);
   localStorage.removeItem(USER_DOCS_KEY);
@@ -5118,7 +5083,6 @@ function clearAllDatabaseData(){
    ========================================================= */
 function initAuth(){
   loadUsers(); loadCurrentUser(); loadOrders();
-  try{ startDemoCloudSync(); }catch(e){}
   // ensure rider roster is ready for assignments, dashboards, and activity analytics
   try{ loadRiders(); syncRidersFromUsers(); }catch(e){}
   loadReconTxns();
