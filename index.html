@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" referrerpolicy="no-referrer" />
 <title>FIKA Courier Booking</title>
@@ -534,35 +534,48 @@
       .authPanel{padding:0;background:transparent;}
     }
     @media (max-width:520px){
-      .authScreen{padding:10px; align-items:flex-start;}
+      .authScreen{padding:8px; align-items:flex-start;}
       .authShell{max-width:390px; margin:0 auto;}
       .authPanel{padding:0;}
-      .authCard{padding:14px 14px 12px;border-radius:22px;max-height:calc(100vh - 20px);}
-      .authBrand{margin-bottom:4px;}
-      .authBrand .logo{font-size:22px;}
-      .authBrand .badge{font-size:8px;padding:4px 9px;}
-      .authIllustration{min-height:52px;margin:0 0 6px;}
-      .authBike{width:82px;}
-      .authSmoke{width:9px;height:9px;left:30%;bottom:14px;}
-      .authMotionLine.l1{width:30px;bottom:14px;}
-      .authMotionLine.l2{width:18px;bottom:26px;}
-      .authMotionLine.l3{width:12px;bottom:6px;}
-      .authTitle{font-size:18px;line-height:1.06;}
-      .authSub{font-size:10.5px;line-height:1.35;margin:3px 0 10px;}
-      .authTabs{margin-bottom:8px;padding:3px;}
-      .authTabs button{font-size:11.5px;padding:8px 6px;border-radius:10px;}
+      .authCard{padding:12px 12px 10px;border-radius:22px;max-height:calc(100vh - 16px);}
+      .authBrand{margin-bottom:2px;}
+      .authBrand .logo{font-size:20px;}
+      .authBrand .badge{font-size:7.5px;padding:4px 8px;}
+      .authIllustration{min-height:46px;margin:0 0 4px;}
+      .authBike{width:74px;}
+      .authSmoke{width:8px;height:8px;left:30%;bottom:12px;}
+      .authMotionLine.l1{width:26px;bottom:12px;}
+      .authMotionLine.l2{width:16px;bottom:22px;}
+      .authMotionLine.l3{width:10px;bottom:5px;}
+      .authTitle{font-size:16px;line-height:1.04;}
+      .authSub{font-size:10px;line-height:1.3;margin:2px 0 8px;}
+      .authTabs{margin-bottom:6px;padding:3px;}
+      .authTabs button{font-size:11px;padding:8px 6px;border-radius:10px;}
       .authTabSlider{border-radius:11px;}
-      .authFields .field,.authForm .field,#loginForm .field{margin-bottom:7px;}
-      .authForm label{font-size:9.5px;margin-bottom:3px;}
-      .authForm input,.authForm select{font-size:12px;padding:10px 12px 10px 36px;border-radius:12px;}
-      .authInputWrap i{left:12px;font-size:13px;}
-      .rolePick{flex-direction:column;gap:6px;}
-      #loginForm .field:last-child{margin-bottom:10px;}
+      .authFields .field,.authForm .field,#loginForm .field{margin-bottom:6px;}
+      .authForm label{font-size:9px;margin-bottom:3px;}
+      .authForm input,.authForm select{font-size:16px;padding:9px 12px 9px 38px;border-radius:12px;min-height:44px;}
+      .authInputWrap i{left:12px;font-size:14px;}
+      .rolePick{flex-direction:row;gap:6px;}
+      .roleOption{padding:10px 8px;font-size:10.5px;gap:6px;border-radius:12px;min-height:56px;line-height:1.2;}
+      .roleOption i{font-size:12px;}
+      #loginForm .field:last-child{margin-bottom:8px;}
       #loginForm .authFields{padding-bottom:0;}
-      #loginForm .authPrimaryBtn{margin-top:10px; min-height:46px; font-size:13px; border-radius:13px;}
-      .authHint{font-size:9px;margin-top:4px;}
-      .authError{font-size:9px;min-height:10px;}
-      .tinyNote{font-size:9px;margin-top:4px;}
+      #loginForm .authPrimaryBtn{margin-top:8px; min-height:44px; font-size:12.5px; border-radius:13px;}
+      .authPrimaryBtn{min-height:44px;font-size:13px;border-radius:13px;}
+      .authHint{font-size:8.75px;margin-top:4px;line-height:1.3;}
+      .authError{font-size:8.75px;min-height:10px;}
+      .tinyNote{font-size:8.75px;margin-top:4px;line-height:1.3;}
+    }
+    @media (max-width:390px){
+      .authScreen{padding:6px;}
+      .authCard{padding:10px 10px 8px; border-radius:20px;}
+      .authBrand .logo{font-size:18px;}
+      .authTitle{font-size:15px;}
+      .authSub{font-size:9.5px;}
+      .authTabs button{font-size:10.5px;padding:7px 5px;}
+      .roleOption{font-size:10px;padding:9px 6px;min-height:52px;}
+      .authForm input,.authForm select{padding-left:36px;}
     }
 
     /* App */
@@ -8561,7 +8574,7 @@ const FOOD_CHIEF_TASTERS_SRCDOC = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
   <title>Chief Tasters | Food Hub</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
