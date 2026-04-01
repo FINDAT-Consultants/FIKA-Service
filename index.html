@@ -3115,6 +3115,7 @@ body.dark .fxProgWrap{ background: rgba(255,255,255,.04); }
 
           <div id="authErrorLogin" class="authError"></div>
           <button class="authPrimaryBtn" id="loginBtn" type="button">Sign in</button>
+          <div class="authHint"><b>Demo logins:</b> Management = <b>fika</b> / <b>Admin01</b>, Rider = <b>rider</b> / <b>Admin01</b>, Client = <b>client</b> / <b>Admin01</b>.</div>
         </div>
 
         <div id="signupForm" class="authForm hidden">
@@ -3907,7 +3908,7 @@ body.dark .fxProgWrap{ background: rgba(255,255,255,.04); }
       <div class="modalHead">
         <div style="min-width:0">
           <h3>Delete all stored data?</h3>
-          <p>This will permanently remove all locally saved users and orders on this device.</p>
+          <p>This will permanently remove locally saved data on this device, but protected demo accounts will be restored automatically.</p>
         </div>
         <button class="xBtn" type="button" id="closeClearDataModal">×</button>
       </div>
@@ -4020,15 +4021,30 @@ function syncRidersFromUsers(){
 
 const USERS_KEY = 'jessin_users';
 
-/* ========= Permanent default Management account (protected) ========= */
+/* ========= Permanent default demo accounts (protected) ========= */
 const DEFAULT_MGMT_ID = 'u-mgmt-default';
 const DEFAULT_MGMT_NAME = 'Fika';
 const DEFAULT_MGMT_USERNAME = 'fika'; // login identifier (case-insensitive)
 const DEFAULT_MGMT_PASSWORD = 'Admin01';
 
+const DEFAULT_RIDER_ID = 'u-rider-demo-default';
+const DEFAULT_RIDER_NAME = 'Rider';
+const DEFAULT_RIDER_USERNAME = 'rider';
+const DEFAULT_RIDER_PASSWORD = 'Admin01';
+
+const DEFAULT_CLIENT_ID = 'u-client-demo-default';
+const DEFAULT_CLIENT_NAME = 'Client';
+const DEFAULT_CLIENT_USERNAME = 'client';
+const DEFAULT_CLIENT_PASSWORD = 'Admin01';
+
 function ensureDefaultManagementAccount(){
-  // Guarantees the Management default account exists in storage and is not removable.
-  // Also re-applies the required credentials (permanent default).
+  // Backward-compatible wrapper.
+  return ensureDefaultDemoAccounts();
+}
+
+function ensureDefaultDemoAccounts(){
+  // Guarantees the default Management, Rider, and Client demo accounts exist in storage
+  // and remain protected / non-removable. Credentials are re-applied on each sync.
   let list = [];
   try{
     const raw = localStorage.getItem(USERS_KEY);
@@ -4048,9 +4064,8 @@ function ensureDefaultManagementAccount(){
     return true;
   });
 
-  let u = list.find(x => String(x.id) === DEFAULT_MGMT_ID);
-  if(!u){
-    u = {
+  const defaults = [
+    {
       id: DEFAULT_MGMT_ID,
       role: 'management',
       name: DEFAULT_MGMT_NAME,
@@ -4060,30 +4075,66 @@ function ensureDefaultManagementAccount(){
       email: '',
       phone: '',
       theme: 'light',
-      mapStyle: 'standard',
-      createdAt: now,
-      updatedAt: now,
-      protected: true
-    };
-    list.push(u);
-  }else{
-    // Enforce permanent defaults
-    u.role = 'management';
-    u.name = DEFAULT_MGMT_NAME;
-    u.fullName = DEFAULT_MGMT_NAME;
-    u.username = DEFAULT_MGMT_USERNAME;
-    u.password = DEFAULT_MGMT_PASSWORD;
-    u.protected = true;
-    u.updatedAt = now;
-    if(!u.createdAt) u.createdAt = now;
-  }
+      mapStyle: 'standard'
+    },
+    {
+      id: DEFAULT_RIDER_ID,
+      role: 'rider',
+      name: DEFAULT_RIDER_NAME,
+      fullName: DEFAULT_RIDER_NAME,
+      username: DEFAULT_RIDER_USERNAME,
+      password: DEFAULT_RIDER_PASSWORD,
+      email: '',
+      phone: '+260970000001',
+      theme: 'light',
+      mapStyle: 'standard'
+    },
+    {
+      id: DEFAULT_CLIENT_ID,
+      role: 'client',
+      name: DEFAULT_CLIENT_NAME,
+      fullName: DEFAULT_CLIENT_NAME,
+      username: DEFAULT_CLIENT_USERNAME,
+      password: DEFAULT_CLIENT_PASSWORD,
+      email: '',
+      phone: '+260970000002',
+      theme: 'light',
+      mapStyle: 'standard'
+    }
+  ];
+
+  defaults.forEach(seed => {
+    let u = list.find(x => String(x.id) === String(seed.id));
+    if(!u){
+      u = Object.assign({}, seed, { createdAt: now, updatedAt: now, protected: true });
+      list.push(u);
+    }else{
+      u.role = seed.role;
+      u.name = seed.name;
+      u.fullName = seed.fullName;
+      u.username = seed.username;
+      u.password = seed.password;
+      u.email = seed.email;
+      u.phone = seed.phone;
+      u.theme = u.theme || seed.theme || 'light';
+      u.mapStyle = u.mapStyle || seed.mapStyle || 'standard';
+      u.protected = true;
+      u.updatedAt = now;
+      if(!u.createdAt) u.createdAt = now;
+    }
+  });
 
   try{ localStorage.setItem(USERS_KEY, JSON.stringify(list)); }catch(e){}
-  // expose for other modules (reset, db sync, etc.)
-  try{ window.FIKA_DEFAULT_MGMT_ID = DEFAULT_MGMT_ID; }catch(e){}
+  try{
+    window.FIKA_DEFAULT_MGMT_ID = DEFAULT_MGMT_ID;
+    window.FIKA_DEFAULT_RIDER_ID = DEFAULT_RIDER_ID;
+    window.FIKA_DEFAULT_CLIENT_ID = DEFAULT_CLIENT_ID;
+    window.ensureDefaultDemoAccounts = ensureDefaultDemoAccounts;
+  }catch(e){}
   return list;
 }
 try{ window.ensureDefaultManagementAccount = ensureDefaultManagementAccount; }catch(e){}
+try{ window.ensureDefaultDemoAccounts = ensureDefaultDemoAccounts; }catch(e){}
 
 const CURRENT_USER_KEY = 'jessin_current_user';
 const ORDERS_KEY = 'jessin_orders';
@@ -5139,7 +5190,7 @@ function loadUsers(){
   // derive & persist rider roster
   try{ loadRiders(); syncRidersFromUsers(); }catch(e){}
 }
-function saveUsers(){ localStorage.setItem(USERS_KEY, JSON.stringify(users)); try{ ensureDefaultManagementAccount(); }catch(e){} try{ syncRidersFromUsers(); }catch(e){} }
+function saveUsers(){ localStorage.setItem(USERS_KEY, JSON.stringify(users)); try{ ensureDefaultDemoAccounts(); }catch(e){} try{ syncRidersFromUsers(); }catch(e){} }
 
 function loadCurrentUser(){
   try{
@@ -23459,8 +23510,8 @@ function saveDB(db){
 
     if(action === "delete-user"){
       try{
-        if (String(id) === String(window.FIKA_DEFAULT_MGMT_ID || DEFAULT_MGMT_ID)){
-          alert("This default Management account is protected and cannot be deleted.");
+        if (user && user.protected){
+          alert("This protected demo account cannot be deleted.");
           return;
         }
       }catch(e){}
@@ -23473,10 +23524,10 @@ function saveDB(db){
     }
 
     if(action === "edit-user"){
-      const isProtectedDefault = (String(id) === String(window.FIKA_DEFAULT_MGMT_ID || DEFAULT_MGMT_ID));
+      const isProtectedDefault = !!(user && user.protected);
       const html = `
         <form id="edit-user-form" class="form">
-          ${isProtectedDefault ? `<div class="pilltag pilltag--mgmt" style="margin-bottom:10px;">Protected default Management account</div>` : ``}
+          ${isProtectedDefault ? `<div class="pilltag pilltag--mgmt" style="margin-bottom:10px;">Protected demo account</div>` : ``}
           <div class="grid">
             <label class="field">
               <span class="field__label">Role</span>
@@ -23820,8 +23871,8 @@ function saveDB(db){
       try{ localStorage.removeItem(k); }catch(e){}
     });
 
-    // Always restore the protected default Management account
-    try{ if (window.ensureDefaultManagementAccount) window.ensureDefaultManagementAccount(); }catch(e){}
+    // Always restore the protected default demo accounts
+    try{ if (window.ensureDefaultDemoAccounts) window.ensureDefaultDemoAccounts(); else if (window.ensureDefaultManagementAccount) window.ensureDefaultManagementAccount(); }catch(e){}
 
     // Re-render everything
     try{ renderSelectedFiles(); }catch(e){}
