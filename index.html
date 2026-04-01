@@ -479,11 +479,11 @@
     .authHint{font-size:10px;color:#64748b;margin-top:6px;text-align:center;line-height:1.35;}
     .authError{font-size:10px;color:#dc2626;margin-top:2px;min-height:12px;text-align:center;font-weight:700;}
     .tinyNote{font-size:10px;color:#64748b;line-height:1.35;margin-top:6px;}
-    #loginForm .authFields{overflow:visible;padding-bottom:10px;}
-    #loginForm .field{margin-bottom:12px;}
+    #loginForm .authFields{overflow:visible;padding-bottom:6px;}
+    #loginForm .field{margin-bottom:7px;}
     #loginForm .field:last-child{margin-bottom:18px;}
-    #loginForm .authError{margin-top:4px; margin-bottom:12px; min-height:16px;}
-    #loginForm .authPrimaryBtn{margin-top:0;}
+    #loginForm .authPrimaryBtn{margin-top:26px;}
+    #loginForm #authErrorLogin{margin-top:0; margin-bottom:8px;}
 
     /* ===== Signup role picker (Management locked) ===== */
     .rolePick{display:flex;gap:8px;width:100%;}
@@ -534,18 +534,18 @@
       .authPanel{padding:0;background:transparent;}
     }
     @media (max-width:520px){
-      .authCard{padding:22px 18px;border-radius:24px;}
+      .authCard{padding:22px 18px 14px;border-radius:24px;}
       .authBrand .logo{font-size:28px;}
       .authTitle{font-size:24px;}
       .authSub{font-size:13px;margin-bottom:20px;}
       .authTabs button{font-size:13px;padding:11px 8px;}
       .authForm input,.authForm select{font-size:13px;padding:13px 14px 13px 44px;}
       .authInputWrap i{left:14px;font-size:15px;}
-      #loginForm .field{margin-bottom:14px;}
-      #loginForm .field:last-child{margin-bottom:20px;}
-      #loginForm .authError{margin-bottom:14px;}
-      #loginForm .authPrimaryBtn{display:block; width:100%; position:relative; z-index:0;}
       .rolePick{flex-direction:column;}
+      #loginForm .field{margin-bottom:12px;}
+      #loginForm .field:last-child{margin-bottom:24px;}
+      #loginForm .authPrimaryBtn{margin-top:18px; min-height:54px;}
+      #loginForm .authFields{padding-bottom:2px;}
     }
 
     /* App */
@@ -3120,6 +3120,7 @@ body.dark .fxProgWrap{ background: rgba(255,255,255,.04); }
 
           <div id="authErrorLogin" class="authError"></div>
           <button class="authPrimaryBtn" id="loginBtn" type="button">Sign in</button>
+          
         </div>
 
         <div id="signupForm" class="authForm hidden">
@@ -24468,6 +24469,10 @@ function saveDB(db){
       </div>
     </div>
   </div>
+
+
+
+
 <div id="toastHost" hidden></div>
 <div id="bookingPanel" hidden></div>
 <div id="mgmtLocatePanel" hidden></div>
