@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" referrerpolicy="no-referrer" />
 <title>FIKA Courier Booking</title>
@@ -534,57 +534,59 @@
       .authPanel{padding:0;background:transparent;}
     }
     @media (max-width:520px){
-      .authScreen{padding:6px; align-items:flex-start;}
+      .authScreen{padding:5px; align-items:flex-start;}
       .authShell{max-width:390px; margin:0 auto;}
       .authPanel{padding:0;}
-      .authCard{padding:8px 8px 6px;border-radius:18px;max-height:calc(100vh - 12px);}
-      .authBrand{margin-bottom:1px;}
-      .authBrand .logo{font-size:17px;}
-      .authBrand .badge{font-size:6.5px;padding:3px 7px;}
-      .authIllustration{min-height:34px;margin:0 0 1px;}
-      .authBike{width:56px;}
-      .authSmoke{width:7px;height:7px;left:30%;bottom:10px;}
-      .authMotionLine.l1{width:20px;bottom:10px;}
-      .authMotionLine.l2{width:12px;bottom:17px;}
-      .authMotionLine.l3{width:8px;bottom:4px;}
-      .authTitle{font-size:13px;line-height:1.02;margin:0;}
-      .authSub{font-size:8.5px;line-height:1.18;margin:1px 0 4px;}
-      .authTabs{margin-bottom:4px;padding:2px;}
-      .authTabs button{font-size:9.75px;padding:6px 4px;border-radius:9px;}
-      .authTabSlider{border-radius:9px;}
-      .authForm{gap:3px;min-height:0;}
+      .authCard{padding:7px 7px 5px;border-radius:16px;max-height:calc(100vh - 10px);}
+      .authBrand{margin-bottom:0;}
+      .authBrand .logo{font-size:16px;}
+      .authBrand .badge{font-size:6px;padding:3px 6px;}
+      .authIllustration{min-height:30px;margin:0;}
+      .authBike{width:50px;}
+      .authSmoke{width:6px;height:6px;left:30%;bottom:9px;}
+      .authMotionLine.l1{width:18px;bottom:9px;}
+      .authMotionLine.l2{width:10px;bottom:15px;}
+      .authMotionLine.l3{width:7px;bottom:3px;}
+      .authTitle{font-size:12px;line-height:1.02;margin:0;}
+      .authSub{font-size:7.5px;line-height:1.14;margin:1px 0 3px;}
+      .authTabs{margin-bottom:3px;padding:2px;}
+      .authTabs button{font-size:9px;padding:5px 4px;border-radius:8px;}
+      .authTabSlider{border-radius:8px;}
+      .authForm{gap:2px;min-height:0;}
       .authFields{padding-right:1px;padding-bottom:1px;min-height:0;}
-      .authFields .field,.authForm .field,#loginForm .field{margin-bottom:4px;}
-      .authForm label{font-size:8px;margin-bottom:1px;line-height:1.1;}
-      .authForm input,.authForm select{font-size:16px;padding:6px 9px 6px 31px;border-radius:10px;min-height:34px;}
-      .authForm input[type="file"]{padding:6px 8px;min-height:34px;font-size:11px;}
-      .authInputWrap i{left:9px;font-size:12px;}
-      .rolePick{flex-direction:row;gap:4px;}
-      .roleOption{padding:6px 4px;font-size:8.5px;gap:4px;border-radius:10px;min-height:40px;line-height:1.05;}
-      .roleOption i{font-size:10px;}
+      .authFields .field,.authForm .field,#loginForm .field{margin-bottom:3px;}
+      .authForm label{font-size:7px;margin-bottom:1px;line-height:1.05;}
+      .authForm input,.authForm select{font-size:12px;padding:6px 9px 6px 28px;border-radius:9px;min-height:30px;font-weight:600;}
+      .authForm input[type="file"]{padding:5px 7px;min-height:30px;font-size:10px;}
+      .authInputWrap i{left:8px;font-size:10px;}
+      .rolePick{flex-direction:row;gap:3px;}
+      .roleOption{padding:5px 4px;font-size:7.75px;gap:3px;border-radius:9px;min-height:34px;line-height:1.02;}
+      .roleOption i{font-size:9px;}
+      .signupPicField{display:none;}
       #loginForm .field:last-child{margin-bottom:3px;}
       #loginForm .authFields{padding-bottom:0;}
-      #loginForm .authPrimaryBtn{margin-top:4px; min-height:34px; font-size:10.5px; border-radius:10px;}
-      #signupForm{padding-bottom:1px; min-height:0;}
-      #signupForm .authFields{max-height:calc(100vh - 255px); overflow:auto; padding-bottom:4px;}
-      #signupForm .authPrimaryBtn{position:sticky;bottom:0;z-index:3;margin-top:4px;min-height:34px;font-size:10.5px;border-radius:10px;box-shadow:0 8px 14px -10px rgba(99,102,241,.45);}
-      .authPrimaryBtn{min-height:34px;font-size:11px;border-radius:10px;}
-      .authHint{font-size:7px;margin-top:2px;line-height:1.15;}
-      .authError{font-size:7px;min-height:8px;}
-      .tinyNote{font-size:7px;margin-top:2px;line-height:1.12;}
+      #loginForm .authPrimaryBtn{margin-top:3px; min-height:30px; font-size:10px; border-radius:9px;}
+      #signupForm{padding-bottom:0; min-height:0;}
+      #signupForm .authFields{max-height:calc(100vh - 190px); overflow:auto; padding-bottom:34px;}
+      #signupForm .authPrimaryBtn{position:sticky;bottom:0;z-index:3;margin-top:2px;min-height:30px;font-size:9.75px;border-radius:9px;box-shadow:0 8px 14px -10px rgba(99,102,241,.45);}
+      .authPrimaryBtn{min-height:30px;font-size:10px;border-radius:9px;padding:0 10px;}
+      .authHint{font-size:6.5px;margin-top:1px;line-height:1.1;}
+      .authError{font-size:6.5px;min-height:7px;}
+      .tinyNote{font-size:6.5px;margin-top:1px;line-height:1.08;}
     }
     @media (max-width:390px){
-      .authScreen{padding:5px;}
-      .authCard{padding:7px 7px 6px; border-radius:16px; max-height:calc(100vh - 10px);}
-      .authBrand .logo{font-size:16px;}
-      .authTitle{font-size:12px;}
-      .authSub{font-size:8px;}
-      .authTabs button{font-size:9px;padding:5px 4px;}
-      .roleOption{font-size:8px;padding:5px 4px;min-height:36px;}
-      .authForm input,.authForm select{padding-left:29px;min-height:32px;}
-      .authInputWrap i{left:8px;font-size:11px;}
-      #signupForm .authFields{max-height:calc(100vh - 240px);}
-      .authPrimaryBtn,#loginForm .authPrimaryBtn,#signupForm .authPrimaryBtn{min-height:32px;font-size:10px;}
+      .authScreen{padding:4px;}
+      .authCard{padding:6px 6px 5px; border-radius:14px; max-height:calc(100vh - 8px);}
+      .authBrand .logo{font-size:15px;}
+      .authTitle{font-size:11px;}
+      .authSub{font-size:7px;}
+      .authTabs button{font-size:8.5px;padding:4px 3px;}
+      .roleOption{font-size:7px;padding:4px 3px;min-height:32px;}
+      .authForm label{font-size:6.5px;}
+      .authForm input,.authForm select{font-size:11px;padding-left:26px;min-height:28px;}
+      .authInputWrap i{left:7px;font-size:9px;}
+      #signupForm .authFields{max-height:calc(100vh - 175px);padding-bottom:32px;}
+      .authPrimaryBtn,#loginForm .authPrimaryBtn,#signupForm .authPrimaryBtn{min-height:28px;font-size:9px;}
     }
 
     /* App */
@@ -3185,7 +3187,7 @@ body.dark .fxProgWrap{ background: rgba(255,255,255,.04); }
                 <input id="signupPhone" type="tel" placeholder="e.g. 26097xxxxxxx">
               </div>
             </div>
-            <div class="field">
+            <div class="field signupPicField">
               <label for="signupPic">Profile picture (optional)</label>
               <input id="signupPic" type="file" accept="image/*">
               <div class="tinyNote">Tip: Choose a clear headshot. Stored locally in this browser.</div>
