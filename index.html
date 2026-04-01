@@ -454,6 +454,18 @@
       outline:none;
       transition:var(--transition);
     }
+    .loginRoleWrap i{
+      left:12px;
+    }
+    .loginRoleWrap select{
+      padding-left:46px;
+      padding-right:34px;
+      text-indent:0;
+      appearance:none;
+      -webkit-appearance:none;
+      -moz-appearance:none;
+      background-image:none;
+    }
     .authForm input[type="file"]{padding:10px 12px;background:#f8fafc;}
     .authForm select.hiddenSelect{display:none !important;}
     .authForm input:focus,.authForm select:focus{
@@ -557,6 +569,8 @@
       .authFields .field,.authForm .field,#loginForm .field{margin-bottom:3px;}
       .authForm label{font-size:7px;margin-bottom:1px;line-height:1.05;}
       .authForm input,.authForm select{font-size:12px;padding:6px 9px 6px 28px;border-radius:9px;min-height:30px;font-weight:600;}
+      .loginRoleWrap i{left:7px;font-size:9px;}
+      .loginRoleWrap select{padding-left:32px;padding-right:26px;}
       .authForm input[type="file"]{padding:5px 7px;min-height:30px;font-size:10px;}
       .authInputWrap i{left:8px;font-size:10px;}
       .rolePick{flex-direction:row;gap:3px;}
@@ -3148,7 +3162,7 @@ body.dark .fxProgWrap{ background: rgba(255,255,255,.04); }
             </div>
             <div class="field">
               <label for="loginRole">Login as</label>
-              <div class="authInputWrap">
+              <div class="authInputWrap loginRoleWrap">
                 <i class="fa-solid fa-user-tag"></i>
                 <select id="loginRole">
                   <option value="client">Client</option>
