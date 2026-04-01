@@ -1859,8 +1859,9 @@ body.dark .pmShowBtn{ background:rgba(255,255,255,.06); color:#fff; border-color
     .formRow{ display:flex; gap:10px; margin-top:12px; }
     .formRow input, .formRow select{width:100%; border:1px solid var(--line); border-radius:18px; padding:12px 12px; outline:none; background:#fff; font-size:13px; font-weight:700;}
     .pdNoZoomInput{font-size:16px !important; -webkit-text-size-adjust:100%;}
-    .pdSelectPlaceholder{color:#98a2b3;}
-    .pdSelectPlaceholder.has-value{color:var(--text);}
+    .pdGhostPlaceholder::placeholder{color:#98a2b3; opacity:1;}
+    .pdGhostPlaceholder.is-empty{color:#98a2b3;}
+    .pdGhostPlaceholder:not(.is-empty){color:var(--text);}
 
     .routeSummary{margin-top:12px; background:#fbfbfd; border:1px solid var(--line); border-radius:18px; padding:10px 12px; font-size:12px; color:#111; display:none; font-weight:800;}
     .routeSummary strong{font-weight:900}
@@ -3690,12 +3691,8 @@ body.dark .fxProgWrap{ background: rgba(255,255,255,.04); }
               </div>
 
               <div class="formRow">
-                <select id="pick-up-date" class="pdSelectPlaceholder" aria-label="Pick-up date">
-                  <option value="" selected>Pick-up date</option>
-                </select>
-                <select id="pick-up-time" class="pdSelectPlaceholder" aria-label="Pick-up time">
-                  <option value="" selected>Pick-up time</option>
-                </select>
+                <input type="text" id="pick-up-date" class="pdNoZoomInput pdGhostPlaceholder is-empty" placeholder="Pick-up date" inputmode="none" autocomplete="off" data-real-type="date">
+                <input type="text" id="pick-up-time" class="pdNoZoomInput pdGhostPlaceholder is-empty" placeholder="Pick-up time" inputmode="none" autocomplete="off" data-real-type="time">
               </div>
             </div>
           </div>
@@ -8020,69 +8017,42 @@ function extractBookingDetails(){
 
 
 function initPackageDeliveryGhostInputs(){
-  const dateSelect = document.getElementById('pick-up-date');
-  const timeSelect = document.getElementById('pick-up-time');
+  ['pick-up-date','pick-up-time'].forEach(id => {
+    const input = document.getElementById(id);
+    if (!input || input.dataset.ghostReady === '1') return;
 
-  const setPlaceholderState = (el) => {
-    if (!el) return;
-    el.classList.toggle('has-value', !!String(el.value || '').trim());
-  };
+    const markEmptyState = () => {
+      input.classList.toggle('is-empty', !String(input.value || '').trim());
+    };
 
-  if (dateSelect && dateSelect.dataset.dropdownReady !== '1'){
-    const placeholder = dateSelect.querySelector('option[value=""]');
-    dateSelect.innerHTML = '';
-    if (placeholder) dateSelect.appendChild(placeholder);
-    else dateSelect.insertAdjacentHTML('beforeend', '<option value="">Pick-up date</option>');
-
-    const today = new Date();
-    for (let i = 0; i < 14; i += 1){
-      const d = new Date(today);
-      d.setHours(0,0,0,0);
-      d.setDate(today.getDate() + i);
-      const value = d.toISOString().slice(0,10);
-      const label = d.toLocaleDateString(undefined, {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'short'
+    const realType = String(input.dataset.realType || '').trim();
+    if (realType){
+      input.addEventListener('focus', () => {
+        if (input.type !== realType){
+          try{ input.type = realType; }catch(e){}
+        }
+        markEmptyState();
       });
-      const opt = document.createElement('option');
-      opt.value = value;
-      opt.textContent = label;
-      dateSelect.appendChild(opt);
-    }
 
-    dateSelect.addEventListener('change', () => setPlaceholderState(dateSelect));
-    dateSelect.dataset.dropdownReady = '1';
-  }
+      input.addEventListener('blur', () => {
+        if (!String(input.value || '').trim()){
+          try{ input.type = 'text'; }catch(e){}
+        }
+        markEmptyState();
+      });
 
-  if (timeSelect && timeSelect.dataset.dropdownReady !== '1'){
-    const placeholder = timeSelect.querySelector('option[value=""]');
-    timeSelect.innerHTML = '';
-    if (placeholder) timeSelect.appendChild(placeholder);
-    else timeSelect.insertAdjacentHTML('beforeend', '<option value="">Pick-up time</option>');
+      input.addEventListener('change', () => {
+        markEmptyState();
+      });
 
-    for (let hour = 6; hour <= 20; hour += 1){
-      for (let minute = 0; minute < 60; minute += 30){
-        const value = `${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}`;
-        const labelDate = new Date();
-        labelDate.setHours(hour, minute, 0, 0);
-        const label = labelDate.toLocaleTimeString([], {
-          hour: 'numeric',
-          minute: '2-digit'
-        });
-        const opt = document.createElement('option');
-        opt.value = value;
-        opt.textContent = label;
-        timeSelect.appendChild(opt);
+      if (!String(input.value || '').trim()){
+        try{ input.type = 'text'; }catch(e){}
       }
     }
 
-    timeSelect.addEventListener('change', () => setPlaceholderState(timeSelect));
-    timeSelect.dataset.dropdownReady = '1';
-  }
-
-  setPlaceholderState(dateSelect);
-  setPlaceholderState(timeSelect);
+    markEmptyState();
+    input.dataset.ghostReady = '1';
+  });
 }
 
 function resetBookingForm(){
@@ -8110,8 +8080,8 @@ function resetBookingForm(){
     const tm  = document.getElementById('pick-up-time');
     if (svc) svc.value = 'Standard';
     if (wt)  wt.value  = '';
-    if (dt){ dt.value = ''; dt.classList.remove('has-value'); }
-    if (tm){ tm.value = ''; tm.classList.remove('has-value'); }
+    if (dt){ dt.value = ''; try{ dt.type = 'text'; }catch(e){} dt.classList.add('is-empty'); }
+    if (tm){ tm.value = ''; try{ tm.type = 'text'; }catch(e){} tm.classList.add('is-empty'); }
 
     // Payment
     const pay = document.getElementById('paymentMethod');
