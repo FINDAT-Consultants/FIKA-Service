@@ -1,6 +1,7 @@
 (()=>{
 'use strict';
-const api=window.supabase?.createClient('https://gmiqvpemuabjueyprwyl.supabase.co','sb_publishable_1bOP6RQg-Wd2k51Q3LB1Pg_LsWjdErW');
+const cfg=window.FIKOVA_CONFIG||{};
+const api=(cfg.url&&cfg.publishableKey&&window.supabase?.createClient)?window.supabase.createClient(cfg.url,cfg.publishableKey):null;
 const root=document.getElementById('root'), $=id=>document.getElementById(id), esc=x=>String(x??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 const name='fikova-', bucket='fikova-product-images';let user=null,company=null,admin=false,contact={},page='market',formMode='register',mode='business',companies=[],products=[],bills=[],notices=[];
 const db=(table)=>api.from('fikova_'+table), fileUrl=path=>path?api.storage.from(bucket).getPublicUrl(path).data.publicUrl:'';
