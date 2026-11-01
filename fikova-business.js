@@ -184,7 +184,7 @@ page='owner';return owner();
 }
 $('marketTop').onclick=()=>{page='market';render();};
 $('signoutTop').onclick=async()=>{await api.auth.signOut();user=null;company=null;admin=false;page='market';render();};
-async function boot(){if(!api){root.innerHTML=alertBox('Supabase client could not load. Check your connection.');return;}try{
+async function boot(){const entry=new URLSearchParams(location.search).get('mode');if(entry==='management'){page='auth';mode='management';formMode='login';}else if(entry==='login'){page='auth';mode='business';formMode='login';}else if(entry==='register'){page='auth';mode='business';formMode='register';}if(!api){root.innerHTML=alertBox('Supabase client could not load. Check your connection.');return;}try{
 await identity();if(user)page=admin?'management':company?'owner':'profile';render();
 api.auth.onAuthStateChange(()=>setTimeout(async()=>{await identity();if(page!=='market')page=admin?'management':user?(company?'owner':'profile'):'auth';render();},0));
 }catch(e){root.innerHTML=alertBox(e.message);}}
