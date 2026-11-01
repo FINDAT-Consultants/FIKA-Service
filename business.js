@@ -72,6 +72,7 @@
     .fb-switch input{accent-color:#13895c;width:19px;height:19px}
     .fb-note{color:#92400e;font-size:11px}
     #signupBusinessFields.hidden{display:none!important}
+    @media(max-width:600px){#signupRolePick{flex-wrap:wrap}#signupRolePick .roleOption{flex:1 1 calc(50% - 5px);font-size:11px;min-height:39px}}
     @media(max-width:600px){.fb-panel{padding:12px}.fb-title{font-size:19px}}
   `;
   document.head.appendChild(style);
