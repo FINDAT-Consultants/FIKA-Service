@@ -29,7 +29,7 @@
     const menu=document.querySelector('#menuOverlay .menuList');
     if(menu&&!menu.querySelector('#fikovaBusinessManagement')){
       const btn=document.createElement('button');btn.type='button';btn.className='menuItem';btn.id='fikovaBusinessManagement';
-      btn.innerHTML='<span class="label">Businesses & approvals</span><span class="badge">Management</span>';
+      btn.dataset.feature='database';btn.innerHTML='<span class="label">Businesses & approvals</span><span class="badge">Management</span>';
       btn.hidden=true;btn.addEventListener('click',()=>{location.href='business-portal.html?mode=management';});
       menu.insertBefore(btn,menu.querySelector('[data-feature="settings"]'));
       const observer=new MutationObserver(()=>{
