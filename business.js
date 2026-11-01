@@ -379,7 +379,7 @@
     window.addEventListener('storage',event=>{
       if(![PRODUCT_KEY,MESSAGE_KEY,CONTACT_KEY,'jessin_users'].includes(event.key))return;
       if(event.key==='jessin_users'){
-        try{loadUsers();}catch(_){}
+        try{const incoming=JSON.parse(event.newValue||'[]');if(Array.isArray(incoming))users=incoming;}catch(_){}
         if(currentUser?.role==='business'){
           const found=owner();
           if(found){currentUser={...currentUser,...found};saveCurrentUser();}
