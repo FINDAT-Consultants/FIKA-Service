@@ -120,7 +120,8 @@ try{await loadAdmin();drawDirectory();}catch(e){catchErr('directory',e);}
 }
 function drawDirectory(){
 const host=$('directory');if(!host)return;
-host.innerHTML='<div class="grid"><div class="stat"><small>Businesses</small><strong>'+companies.length+'</strong></div><div class="stat"><small>Pending approvals</small><strong>'+companies.filter(x=>x.status==='pending').length+'</strong></div><div class="stat"><small>Active</small><strong>'+companies.filter(x=>x.status==='active').length+'</strong></div></div><div class="card" style="margin-top:17px"><label class="field">Search companies<input id="companySearch" placeholder="Name, code, location"></label><div id="companiesList"></div></div>';
+host.innerHTML='<div class="card"><div class="split"><div><h3>Developer-style company management</h3><p class="muted">Create a business account invitation or review existing company registrations.</p></div><button type="button" class="primary" id="inviteCompanyBtn">+ Create Company</button></div></div><div class="grid"><div class="stat"><small>Businesses</small><strong>'+companies.length+'</strong></div><div class="stat"><small>Pending approvals</small><strong>'+companies.filter(x=>x.status==='pending').length+'</strong></div><div class="stat"><small>Active</small><strong>'+companies.filter(x=>x.status==='active').length+'</strong></div></div><div class="card" style="margin-top:17px"><label class="field">Search companies<input id="companySearch" placeholder="Name, code, location"></label><div id="companiesList"></div></div>';
+$('inviteCompanyBtn').onclick=createCompany;
 function draw(){
 const term=($('companySearch')?.value||'').toLowerCase();
 $('companiesList').innerHTML=companies.filter(c=>[c.business_name,c.code,c.owner_name,c.location].join(' ').toLowerCase().includes(term)).map(c=>{
@@ -130,13 +131,30 @@ return '<div class="list-card"><div class="company-head"><div><h3 class="company
 host.querySelectorAll('[data-active]').forEach(x=>x.onchange=async()=>{
 const c=companies.find(y=>y.id===x.dataset.active),active=x.checked;if(!confirm((active?'Activate':'Suspend')+' '+c.business_name+'? Verify manual payment before activation.')){x.checked=!active;return;}
 try{await one(db('businesses').update({status:active?'active':'suspended',activated_at:active?new Date().toISOString():c.activated_at}).eq('id',c.id));
-await sendNotice(c.id,active?'Account activated':'Account suspended',active?'FIKova activated your business. Your published products can now appear in the marketplace.':'FIKova suspended your account. Contact Management to confirm payment or ask for assistance.',active?'activation':'suspension');
+// Database trigger automatically records and delivers the status notice.
 toast('Business status saved.');management();}catch(e){toast(e.message);x.checked=!active;}
 });
 host.querySelectorAll('[data-edit]').forEach(x=>x.onclick=()=>editCompany(x.dataset.edit));
 host.querySelectorAll('[data-notice]').forEach(x=>x.onclick=()=>{window.fikovaSelected=x.dataset.notice;page='notices';render();});
 } $('companySearch').oninput=draw;draw();
 }
+function createCompany(){
+nav('management','Create Company','Invite a business owner securely and create a pending company record. Only FIKova Management can do this.','<div class="card"><form id="inviteForm"><div class="fields">'+[
+['business_name','Business name'],['owner_name','Owner full name'],['email','Owner email'],['phone','Business phone'],['category','Category'],['location','Business location'],['country_code','Country code'],['currency','Operating currency']
+].map(x=>'<label class="field">'+x[1]+'<input name="'+x[0]+'" required '+(x[0]==='email'?'type="email"':'')+' value="'+(x[0]==='country_code'?'ZM':x[0]==='currency'?'ZMW':'')+'"></label>').join('')+'</div><div class="btn-row"><button class="primary" type="submit">Invite owner & create company</button><button class="quiet" type="button" id="cancelCompany">Cancel</button></div><div id="inviteError"></div><p class="muted">The owner receives a Supabase email invitation. The new company starts Pending and stays hidden until you activate it.</p></form></div>');
+$('cancelCompany').onclick=()=>{page='management';render();};
+$('inviteForm').onsubmit=async e=>{
+e.preventDefault();const button=e.target.querySelector('[type=submit]');button.disabled=true;
+try{
+const data=Object.fromEntries(new FormData(e.target));
+const response=await api.functions.invoke('fikova-company-invite',{body:data});
+if(response.error)throw response.error;
+if(response.data?.error)throw Error(response.data.error);
+toast('Company created and invitation requested');page='management';render();
+}catch(error){catchErr('inviteError',error);}
+finally{if(button.isConnected)button.disabled=false;}
+};}
+
 async function editCompany(id){
 const c=companies.find(b=>b.id===id),bill=bills.find(b=>b.business_id===id)||{};
 if(!c)return;
